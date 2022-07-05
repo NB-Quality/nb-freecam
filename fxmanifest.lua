@@ -6,7 +6,6 @@ description ''
 repository ''
 
 client_scripts {
-    '@nb-loop/nb-loop.lua',
     '@nb-keyevent/nb-keyevent.lua',
     'nb-freecam.lua'
     

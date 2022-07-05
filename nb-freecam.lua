@@ -238,7 +238,40 @@ end
 local PepareLoop = PepareLoop
 if not PepareLoop then 
     local try = LoadResourceFile("nb-libs","shared/loop.lua") or LoadResourceFile("nb-loop","nb-loop.lua")
-    PepareLoop = PepareLoop or load(try.." return PepareLoop(...)") or _M_.PepareLoop
+    PepareLoop = PepareLoop or (try and load(try.." return PepareLoop(...)")) or _M_.PepareLoop
+end 
+
+local sin = math.sin
+local cos = math.cos
+local torad = math.pi / 180
+function GetCoordsFromGamePlayCameraPointAtSynced(ingoredEntity) 
+    local action = 0
+    local distance = 300
+    local coordsVector =  GetFinalRenderedCamCoord() ;
+    local rotationVectorUnrad = GetFinalRenderedCamRot(2);
+    rotationVector = rotationVectorUnrad * torad
+    local directionVector =  vector3(-sin(rotationVector.z) * cos(rotationVector.x), (cos(rotationVector.z) * cos(rotationVector.x)), sin(rotationVector.x));
+    local destination =  coordsVector + directionVector * distance ;
+    local playerPed = PlayerPedId()
+    local destination_temp = coordsVector + directionVector * 1 ;
+    local getentitytype = function(entity)
+       local type = GetEntityType(entity)
+       local result = "solid"
+       if type == 0 then 
+          result = "solid"
+       elseif type == 1 then 
+          result = "ped"
+       elseif type == 2 then 
+          result = "vehicle"
+       elseif type == 3 then 
+          result = "object"
+       end 
+       return result
+    end 
+    
+    local shapeTestId = StartExpensiveSynchronousShapeTestLosProbe(destination_temp, destination, 511, ingoredEntity or playerPed, 1)
+    local shapeTestResult , hit , endCoords , surfaceNormal , entityHit = GetShapeTestResult(shapeTestId)
+    return hit and endCoords
 end 
 
 
@@ -378,7 +411,7 @@ CreateFreeCamera = function()
                 local rightVec,forwardVec,upVec,pos = GetCamMatrix(cam)
                 if cam == -1 and Loop then 
                     Loop:delete(function()
-                        local coords = pos
+                        local coords = GetCoordsFromGamePlayCameraPointAtSynced(PlayerPedId())
                         local x,y,z = coords.x,coords.y,coords.z 
                         local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
                         local steps = (top-bottom)/100
