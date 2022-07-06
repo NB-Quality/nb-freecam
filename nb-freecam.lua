@@ -313,7 +313,7 @@ CreateFreeCamera = function()
                     end)
                     on("justreleased",function()
                         Keymapactions["+camWWW"] = nil
-                        if pos_temp then SetEntityCoords(PlayerPedId(),pos) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
+                        if pos_temp then SetEntityCoords(PlayerPedId(),pos_temp) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
                         if cam ~= GetRenderingCam() then 
                             cam = -1
                         end 
@@ -331,7 +331,7 @@ CreateFreeCamera = function()
                     end)
                     on("justreleased",function()
                         Keymapactions["+camS"] = nil
-                        if pos_temp then SetEntityCoords(PlayerPedId(),pos) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
+                        if pos_temp then SetEntityCoords(PlayerPedId(),pos_temp) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
                         if cam ~= GetRenderingCam() then 
                             cam = -1
                         end 
@@ -349,7 +349,7 @@ CreateFreeCamera = function()
                     end)
                     on("justreleased",function()
                         Keymapactions["+camA"] = nil
-                        if pos_temp then SetEntityCoords(PlayerPedId(),pos) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end
+                        if pos_temp then SetEntityCoords(PlayerPedId(),pos_temp) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end
                         if cam ~= GetRenderingCam() then 
                             cam = -1
                         end                         
@@ -367,7 +367,7 @@ CreateFreeCamera = function()
                     end)
                     on("justreleased",function()
                         Keymapactions["+camD"] = nil
-                        if pos_temp then SetEntityCoords(PlayerPedId(),pos) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
+                        if pos_temp then SetEntityCoords(PlayerPedId(),pos_temp) RequestCollisionAtCoord(pos_temp.x, pos_temp.y, pos_temp.z) end 
                         if cam ~= GetRenderingCam() then 
                             cam = -1
                         end 
