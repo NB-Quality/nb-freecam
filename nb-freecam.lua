@@ -249,7 +249,7 @@ function GetCoordsFromGamePlayCameraPointAtSynced(ingoredEntity)
     local distance = 300
     local coordsVector =  GetFinalRenderedCamCoord() ;
     local rotationVectorUnrad = GetFinalRenderedCamRot(2);
-    rotationVector = rotationVectorUnrad * torad
+    local rotationVector = rotationVectorUnrad * torad
     local directionVector =  vector3(-sin(rotationVector.z) * cos(rotationVector.x), (cos(rotationVector.z) * cos(rotationVector.x)), sin(rotationVector.x));
     local destination =  coordsVector + directionVector * distance ;
     local playerPed = PlayerPedId()
@@ -407,8 +407,23 @@ CreateFreeCamera = function()
             SetEntityVisible(playerEntity, false, false)
             FreezeEntityPosition(playerEntity, true)
             SetPlayerCanUseCover (PlayerId(), false)
+            local game = GetGameName()
+            if game == "redm" then 
+                GetCamMatrix = function(cam)
+                    local pos = GetCamCoord(cam)
+                    local rot = GetCamRot(cam, 2)
+                    local rotationVector = rot * torad
+                    local forwardVec = vector3(-sin(rotationVector.z) * cos(rotationVector.x), (cos(rotationVector.z) * cos(rotationVector.x)), sin(rotationVector.x));
+                    local rightVec = vector3(cos(rotationVector.z) * cos(rotationVector.y), (sin(rotationVector.z) * cos(rotationVector.y)), -sin(rotationVector.y));
+                    local upVec = vector3(sin(rotationVector.y) * cos(rotationVector.z), -sin(rotationVector.y) * sin(rotationVector.z), cos(rotationVector.y) * cos(rotationVector.z));
+                    
+                    
+                    return rightVec, forwardVec, upVec, pos
+                end 
+            end 
             Loop(function()
                 local rightVec,forwardVec,upVec,pos = GetCamMatrix(cam)
+                
                 if cam == -1 and Loop then 
                     Loop:delete(function()
                         local coords = GetCoordsFromGamePlayCameraPointAtSynced(PlayerPedId())
@@ -427,7 +442,8 @@ CreateFreeCamera = function()
                     end) 
                 end 
                 local rot = GetGameplayCamRot(2) 
-                SetCamRot(cam, rot, 2)
+                
+                SetCamRot(cam, rot+0.1, 2)
                 for i, v in pairs(Keymapactions) do 
                     v(rightVec,forwardVec,upVec,pos)
                 end 
