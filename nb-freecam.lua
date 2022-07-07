@@ -268,10 +268,11 @@ function GetCoordsFromGamePlayCameraPointAtSynced(ingoredEntity)
        end 
        return result
     end 
-    
-    local shapeTestId = StartExpensiveSynchronousShapeTestLosProbe(destination_temp, destination, 511, ingoredEntity or playerPed, 1)
-    local shapeTestResult , hit , endCoords , surfaceNormal , entityHit = GetShapeTestResult(shapeTestId)
-    return hit and endCoords
+    if StartExpensiveSynchronousShapeTestLosProbe then 
+        local shapeTestId = StartExpensiveSynchronousShapeTestLosProbe(destination_temp, destination, 511, ingoredEntity or playerPed, 1)
+        local shapeTestResult , hit , endCoords , surfaceNormal , entityHit = GetShapeTestResult(shapeTestId)
+        return hit and endCoords
+    end 
 end 
 
 
@@ -427,18 +428,20 @@ CreateFreeCamera = function()
                 if cam == -1 and Loop then 
                     Loop:delete(function()
                         local coords = GetCoordsFromGamePlayCameraPointAtSynced(PlayerPedId())
-                        local x,y,z = coords.x,coords.y,coords.z 
-                        local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
-                        local steps = (top-bottom)/100
-                        local foundGround
-                        local height = bottom + 0.0
-                        while not foundGround and height < top  do 
+                        if coords then 
+                            local x,y,z = coords.x,coords.y,coords.z 
+                            local bottom,top = GetHeightmapBottomZForPosition(x,y), GetHeightmapTopZForPosition(x,y)
+                            local steps = (top-bottom)/100
+                            local foundGround
+                            local height = bottom + 0.0
+                            while not foundGround and height < top  do 
+                                SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
+                                foundGround, zPos = GetGroundZFor_3dCoord(x,y, height )
+                                height = height + steps
+                                Wait(0)
+                            end 
                             SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
-                            foundGround, zPos = GetGroundZFor_3dCoord(x,y, height )
-                            height = height + steps
-                            Wait(0)
                         end 
-                        SetPedCoordsKeepVehicle(PlayerPedId(), x,y, height )
                     end) 
                 end 
                 local rot = GetGameplayCamRot(2) 
