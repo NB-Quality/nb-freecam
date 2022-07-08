@@ -78,7 +78,7 @@ do
         end 
     end 
 
-    local PepareLoop = function(duration,init)
+    local LoopParty = function(duration,init)
         if not Loops[duration] then Loops[duration] = {} end 
         local self = {}
         self.duration = duration
@@ -185,15 +185,15 @@ do
         self.set = self.transfer 
         return self
     end 
-    _M_.PepareLoop = PepareLoop
+    _M_.LoopParty = LoopParty
 end 
 
 
 
-local PepareLoop = PepareLoop
-if not PepareLoop then 
+local LoopParty = LoopParty
+if not LoopParty then 
     local try = LoadResourceFile("nb-libs","shared/loop.lua") or LoadResourceFile("nb-loop","nb-loop.lua")
-    PepareLoop = PepareLoop or (try and load(try.." return PepareLoop(...)")) or _M_.PepareLoop
+    LoopParty = LoopParty or (try and load(try.." return LoopParty(...)")) or _M_.LoopParty
 end 
 
 local sin = math.sin
@@ -357,7 +357,7 @@ CreateFreeCamera = function()
         end 
         
         if not Loop then
-            Loop = PepareLoop(0)
+            Loop = LoopParty(0)
             local playerEntity = PlayerPedId()
             SetEntityCollision(playerEntity, false, false)
             SetEntityVisible(playerEntity, false, false)
