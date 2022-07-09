@@ -128,17 +128,11 @@ do
             return false
         end
         self.delay = nil 
-        self.delete = function(s,delay,cb)
-            local delay = delay
-            local cb = cb 
-            if type(delay) ~= "number" then 
-                cb = delay
-                delay = nil 
-            end 
-            local del = function(instant)
-                if self.delay == delay or instant == "negbook" then 
+        local checktimeout = function(cb)
+                
+                if (self.delay and self.delay <= GetGameTimer()) or not self.delay then 
                     if Loops[duration] then 
-                        local i = s.found(s)
+                        local i = self.found(self)
                         if i then
                             local fns = self.fns
                             local fnsbreak = self.fnsbreak
@@ -163,12 +157,22 @@ do
                     end 
                 end 
             end 
+        self.delete = function(s,delay,cb)
+            local delay = delay
+            local cb = cb 
+            if type(delay) ~= "number" then 
+                cb = delay
+                delay = nil 
+            end 
+            
             if delay and delay>0 then 
-                SetTimeout(delay,del)
-                self.delay = delay 
+                self.delay = delay + GetGameTimer()   
+                SetTimeout(delay,function()
+                    checktimeout(cb)
+                end)
             else
                 self.delay = nil 
-                del("negbook")
+                checktimeout(cb)
             end 
         end
         self.transfer = function(s,newduration)
@@ -187,8 +191,6 @@ do
     end 
     _M_.LoopParty = LoopParty
 end 
-
-
 
 local LoopParty = LoopParty
 if not LoopParty then 
